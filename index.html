@@ -146,6 +146,46 @@
   .preview-light { background: #ffffff; }
   .preview-dark { background: var(--dark-bg); }
 
+  .preview-toggle {
+    display: inline-flex;
+    gap: 4px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 16px;
+  }
+  .toggle-btn {
+    flex: 0 0 auto;
+    padding: 8px 14px;
+    background: transparent;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    font-family: inherit;
+    transition: background 0.15s, color 0.15s;
+  }
+  .toggle-btn:hover { color: var(--text); }
+  .toggle-btn.active {
+    background: var(--text);
+    color: #ffffff;
+  }
+  .toggle-btn.active:hover { color: #ffffff; }
+
+  .force-desktop .vrl-info { display: table; border-collapse: collapse; }
+  .force-desktop .vrl-identity { display: table-cell; vertical-align: middle; border-right: 2px solid #9ACA3C; padding-right: 20px; padding-bottom: 0; }
+  .force-desktop .vrl-divider { display: none; }
+  .force-desktop .vrl-contact { display: table-cell; vertical-align: middle; padding-left: 20px; }
+
+  .force-mobile { max-width: 360px; }
+  .force-mobile .vrl-info { display: block; }
+  .force-mobile .vrl-identity { display: block; border-right: none; padding-right: 0; }
+  .force-mobile .vrl-divider { display: block; }
+  .force-mobile .vrl-contact { display: block; padding-left: 0; }
+
   .actions {
     display: flex;
     gap: 12px;
@@ -281,14 +321,19 @@
     <!-- ============ PREVIEW ============ -->
     <section>
 
+      <div class="preview-toggle">
+        <button type="button" class="toggle-btn active" data-mode="desktop">Desktop view</button>
+        <button type="button" class="toggle-btn" data-mode="mobile">Mobile view</button>
+      </div>
+
       <div class="preview-box">
         <div class="preview-label preview-label-light">Light mode preview</div>
-        <div class="preview-canvas preview-light" id="preview-light"></div>
+        <div class="preview-canvas preview-light force-desktop" id="preview-light"></div>
       </div>
 
       <div class="preview-box">
         <div class="preview-label preview-label-dark">Dark mode preview <span style="text-transform:none; letter-spacing:0; color:#777; font-weight:400;">— approximation of how auto-adapting clients will render it</span></div>
-        <div class="preview-canvas preview-dark" id="preview-dark"></div>
+        <div class="preview-canvas preview-dark force-desktop" id="preview-dark"></div>
       </div>
 
       <div class="actions">
@@ -413,24 +458,43 @@
     // Alt phone line only renders when BOTH a label and a number are present.
     const altPhoneLine = (d.altLabel && d.altPhone)
       ? `
-      <div><span style="color:#888888;">${escapeHtml(d.altLabel)}:&nbsp;</span><a href="${telHref(d.altPhone)}" style="color:#333333; text-decoration:none;">${escapeHtml(d.altPhone)}</a></div>`
+          <div><span style="color:#888888;">${escapeHtml(d.altLabel)}:&nbsp;</span><a href="${telHref(d.altPhone)}" style="color:#333333; text-decoration:none;">${escapeHtml(d.altPhone)}</a></div>`
       : '';
 
-    return `<hr>
-    <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse; font-family:Arial, Helvetica, sans-serif; mso-line-height-rule:exactly;">
+    // Strategy: ship a stacked layout in the actual HTML (works everywhere,
+    // including Outlook desktop and narrow reading panes). A @media rule
+    // promotes it to a 3-column layout in clients that both support media
+    // queries AND have the viewport width (480px+). The horizontal divider
+    // is hidden in wide mode; the green border-right on .vrl-identity
+    // becomes the vertical accent. Outlook desktop ignores the @media block
+    // entirely, so it gets the stacked DOM as-is — exactly what we want.
+    return `<style>
+@media (min-width: 480px) {
+  .vrl-info { display: table; border-collapse: collapse; }
+  .vrl-identity { display: table-cell; vertical-align: middle; border-right: 2px solid #9ACA3C; padding-right: 20px; padding-bottom: 0; }
+  .vrl-divider { display: none; }
+  .vrl-contact { display: table-cell; vertical-align: middle; padding-left: 20px; }
+}
+</style>
+<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse; font-family:Arial, Helvetica, sans-serif; mso-line-height-rule:exactly;">
   <tr>
-    <td style="padding:0 18px 0 0; vertical-align:middle;">
-      <img src="https://www.vrl.church/Content/VRL_Logo_Small.png" width="78" alt="Valley Real Life" style="display:block; border:0; outline:none; text-decoration:none; width:78px; height:auto;">
+    <td style="padding:0 18px 0 0; vertical-align:top;">
+      <img src="https://www.vrl.church/Content/ExternalSite/Core/ValleyRealLife_Logo_Icon_Color_200716.png" width="78" alt="Valley Real Life" style="display:block; border:0; outline:none; text-decoration:none; width:78px; height:auto;">
     </td>
-    <td style="padding:2px 20px 2px 0; vertical-align:middle; border-right:2px solid #9ACA3C;">
-      <div style="font-size:17px; font-weight:bold; color:#222222; line-height:1.25; padding-bottom:5px;">${name}</div>
-      <div style="font-size:13px; color:#555555; line-height:1.4;">${title}</div>
-      <div style="font-size:13px; color:#555555; line-height:1.4;">${org}</div>
-    </td>
-    <td style="padding:2px 0 2px 20px; vertical-align:middle; font-size:13px; line-height:1.6;">
-      <div><span style="color:#888888;">Office:&nbsp;</span><a href="${officeTel}" style="color:#333333; text-decoration:none;">${officeNumber}</a>${extPart}</div>${altPhoneLine}
-      <div><span style="color:#888888;">Email:&nbsp;</span><a href="mailto:${email}" style="color:#333333; text-decoration:none;">${email}</a></div>
-      <div><span style="color:#888888;">Web:&nbsp;</span><a href="${urlHref(d.website)}" style="color:#333333; text-decoration:none;">${website}</a></div>
+    <td style="vertical-align:top;">
+      <div class="vrl-info">
+        <div class="vrl-identity">
+          <div style="font-size:17px; font-weight:bold; color:#222222; line-height:1.25; padding-bottom:5px;">${name}</div>
+          <div style="font-size:13px; color:#555555; line-height:1.4;">${title}</div>
+          <div style="font-size:13px; color:#555555; line-height:1.4;">${org}</div>
+        </div>
+        <div class="vrl-divider" style="border-top:2px solid #9ACA3C; margin:9px 0 7px; width:140px;"></div>
+        <div class="vrl-contact" style="font-size:13px; line-height:1.7;">
+          <div><span style="color:#888888;">Office:&nbsp;</span><a href="${officeTel}" style="color:#333333; text-decoration:none;">${officeNumber}</a>${extPart}</div>${altPhoneLine}
+          <div><span style="color:#888888;">Email:&nbsp;</span><a href="mailto:${email}" style="color:#333333; text-decoration:none;">${email}</a></div>
+          <div><span style="color:#888888;">Web:&nbsp;</span><a href="${urlHref(d.website)}" style="color:#333333; text-decoration:none;">${website}</a></div>
+        </div>
+      </div>
     </td>
   </tr>
 </table>`;
@@ -542,6 +606,23 @@
 
   Object.values(fields).forEach(el => el.addEventListener('input', render));
   render();
+
+  // Desktop / Mobile preview toggle.
+  // The signature itself uses @media (min-width: 480px) for clients in the wild,
+  // but the preview here is in a browser at whatever width the user has, so we
+  // force the layout via class overrides for a faithful side-by-side comparison.
+  const toggleBtns = document.querySelectorAll('.toggle-btn');
+  const previews = [$('preview-light'), $('preview-dark')];
+  toggleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.mode;
+      toggleBtns.forEach(b => b.classList.toggle('active', b === btn));
+      previews.forEach(p => {
+        p.classList.remove('force-desktop', 'force-mobile');
+        p.classList.add(`force-${mode}`);
+      });
+    });
+  });
 
   // Copy the rendered signature (keeps styling when pasted into email clients).
   $('copy-rendered').addEventListener('click', async (e) => {
