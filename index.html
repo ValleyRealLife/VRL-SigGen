@@ -127,69 +127,90 @@
   .field-row-label  { display: grid; grid-template-columns: 150px 1fr;  gap: 12px; }
   .sub-field { margin-top: 12px; }
 
+  /* ---------- Light / Dark preview switch ---------- */
+  .mode-switch-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .mode-switch-row .mode-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color 0.15s;
+  }
+  .mode-switch-row .mode-label.active { color: var(--text); }
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+    flex: 0 0 auto;
+  }
+  .switch input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+  }
+  .switch-track {
+    position: absolute;
+    inset: 0;
+    background: #ccc;
+    border-radius: 34px;
+    transition: background 0.15s;
+    pointer-events: none;
+  }
+  .switch-track::before {
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+    transition: transform 0.15s;
+  }
+  .switch input:checked + .switch-track { background: var(--text); }
+  .switch input:checked + .switch-track::before { transform: translateX(22px); }
+  .switch input:focus-visible + .switch-track { outline: 2px solid var(--vrl-green); outline-offset: 2px; }
+
+  /* ---------- Layout previews ---------- */
+  .preview-group { margin-bottom: 22px; }
+  .preview-group-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .preview-group-header h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .preview-group-header .hint {
+    font-size: 13px;
+    color: #999;
+  }
+
   .preview-box {
-    margin-bottom: 18px;
+    margin-bottom: 12px;
     border-radius: 10px;
     overflow: hidden;
     border: 1px solid var(--border);
   }
-  .preview-label {
-    padding: 10px 16px;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 600;
-  }
-  .preview-label-light { background: #f5f5f3; color: var(--muted); border-bottom: 1px solid var(--border); }
-  .preview-label-dark { background: #2a2a2a; color: #999; border-bottom: 1px solid #333; }
   .preview-canvas { padding: 24px; }
   .preview-light { background: #ffffff; }
   .preview-dark { background: var(--dark-bg); }
 
-  .preview-toggle {
-    display: inline-flex;
-    gap: 4px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 4px;
-    margin-bottom: 16px;
-  }
-  .toggle-btn {
-    flex: 0 0 auto;
-    padding: 8px 14px;
-    background: transparent;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--muted);
-    font-family: inherit;
-    transition: background 0.15s, color 0.15s;
-  }
-  .toggle-btn:hover { color: var(--text); }
-  .toggle-btn.active {
-    background: var(--text);
-    color: #ffffff;
-  }
-  .toggle-btn.active:hover { color: #ffffff; }
-
-  .force-desktop .vrl-info { display: table; border-collapse: collapse; }
-  .force-desktop .vrl-identity { display: table-cell; vertical-align: top; border-right: 2px solid #9ACA3C; padding-right: 20px; padding-bottom: 0; }
-  .force-desktop .vrl-divider { display: none; }
-  .force-desktop .vrl-contact { display: table-cell; vertical-align: top; padding-left: 20px; }
-
-  .force-mobile { max-width: 360px; }
-  .force-mobile .vrl-info { display: block; }
-  .force-mobile .vrl-identity { display: block; border-right: none; padding-right: 0; }
-  .force-mobile .vrl-divider { display: block; }
-  .force-mobile .vrl-contact { display: block; padding-left: 0; }
-
   .actions {
     display: flex;
     gap: 12px;
-    margin-top: 22px;
   }
   button {
     flex: 1;
@@ -238,16 +259,6 @@
     padding: 2px 7px;
     border-radius: 3px;
     font-size: 14px;
-  }
-  details pre {
-    background: #1a1a1a;
-    color: #e0e0dd;
-    padding: 16px;
-    border-radius: 6px;
-    overflow-x: auto;
-    font-size: 13px;
-    line-height: 1.55;
-    max-height: 360px;
   }
 </style>
 </head>
@@ -321,24 +332,41 @@
     <!-- ============ PREVIEW ============ -->
     <section>
 
-      <div class="preview-toggle">
-        <button type="button" class="toggle-btn active" data-mode="desktop">Desktop view</button>
-        <button type="button" class="toggle-btn" data-mode="mobile">Mobile view</button>
+      <div class="mode-switch-row">
+        <span class="mode-label" id="mode-label-light">Light mode</span>
+        <label class="switch">
+          <input type="checkbox" id="dark-toggle" role="switch" aria-checked="false" aria-label="Toggle dark mode preview">
+          <span class="switch-track"></span>
+        </label>
+        <span class="mode-label" id="mode-label-dark">Dark mode</span>
       </div>
 
-      <div class="preview-box">
-        <div class="preview-label preview-label-light">Light mode preview</div>
-        <div class="preview-canvas preview-light force-desktop" id="preview-light"></div>
+      <div class="preview-group">
+        <div class="preview-group-header">
+          <h3>Horizontal layout</h3>
+          <span class="hint">side-by-side — best for wide reading panes and desktop Outlook</span>
+        </div>
+        <div class="preview-box">
+          <div class="preview-canvas preview-light" id="preview-horizontal"></div>
+        </div>
+        <div class="actions">
+          <button class="btn-primary" id="copy-sig-horizontal">Copy Signature</button>
+          <button class="btn-secondary" id="copy-html-horizontal">Copy HTML</button>
+        </div>
       </div>
 
-      <div class="preview-box">
-        <div class="preview-label preview-label-dark">Dark mode preview <span style="text-transform:none; letter-spacing:0; color:#777; font-weight:400;">— approximation of how auto-adapting clients will render it</span></div>
-        <div class="preview-canvas preview-dark force-desktop" id="preview-dark"></div>
-      </div>
-
-      <div class="actions">
-        <button class="btn-primary" id="copy-rendered">Copy Signature (Recommended)</button>
-        <button class="btn-secondary" id="copy-html">Copy HTML Source</button>
+      <div class="preview-group">
+        <div class="preview-group-header">
+          <h3>Stacked layout</h3>
+          <span class="hint">vertical — best for M365 web and narrow / mobile views</span>
+        </div>
+        <div class="preview-box">
+          <div class="preview-canvas preview-light" id="preview-stacked"></div>
+        </div>
+        <div class="actions">
+          <button class="btn-primary" id="copy-sig-stacked">Copy Signature</button>
+          <button class="btn-secondary" id="copy-html-stacked">Copy HTML</button>
+        </div>
       </div>
 
     </section>
@@ -351,7 +379,7 @@
 
     <h3>Outlook (desktop — Windows or Mac)</h3>
     <ol>
-      <li>Click <strong>"Copy Signature (Recommended)"</strong> above.</li>
+      <li>Click <strong>"Copy Signature"</strong> under whichever layout you prefer — Horizontal or Stacked.</li>
       <li><strong>Windows:</strong> File → Options → Mail → Signatures.<br>
           <strong>Mac (new Outlook):</strong> Outlook → Settings → Signatures.<br>
           <strong>Mac (legacy Outlook):</strong> Outlook → Preferences → Signatures.</li>
@@ -363,17 +391,18 @@
 
     <h3>Microsoft 365 / Outlook on the web</h3>
     <ol>
-      <li>Click <strong>"Copy Signature (Recommended)"</strong> above.</li>
+      <li>Click <strong>"Copy Signature"</strong> under whichever layout you prefer — Horizontal or Stacked.</li>
       <li>Settings (gear, top right) → <strong>Mail → Compose and reply</strong>.<br>
           <em>(If you don't see it, click "View all Outlook settings" at the bottom of the settings pane.)</em></li>
       <li>Under <strong>Email signature</strong>, click <strong>+ New signature</strong>, give it a name.</li>
       <li>Paste into the editor (Ctrl/Cmd+V).</li>
       <li>Under <strong>Select default signatures</strong>, set it for new messages and replies/forwards. Save.</li>
     </ol>
+    <p style="color: var(--muted); font-size: 13px;"><em>M365 strips out any embedded styling more complex than basic formatting, so both layouts here are built as plain, self-contained HTML that doesn't rely on stripped-out styles — pick whichever look you prefer and it will render the same everywhere.</em></p>
 
     <h3>Apple Mail (macOS)</h3>
     <ol>
-      <li>Click <strong>"Copy Signature (Recommended)"</strong> above.</li>
+      <li>Click <strong>"Copy Signature"</strong> under whichever layout you prefer — Horizontal or Stacked.</li>
       <li>Mail → <strong>Settings</strong> (or <strong>Preferences</strong> on older versions) → <strong>Signatures</strong> tab.</li>
       <li>Select your account in the left column, click <strong>+</strong> to add a new signature, name it.</li>
       <li>Click into the right-hand editor pane and paste (Cmd+V).</li>
@@ -384,8 +413,8 @@
     <h3>Apple Mail (iOS / iPadOS)</h3>
     <p>iOS Mail doesn't have a rich signature editor in Settings — it accepts plain text only there. To get the formatted signature in, use this workaround:</p>
     <ol>
-      <li>On your iPhone/iPad, open this generator page in <strong>Safari</strong> and fill in your info.</li>
-      <li>Tap and hold inside the <strong>light-mode preview</strong> above, then drag the selection handles to cover the entire signature (logo through website).</li>
+      <li>On your iPhone/iPad, open this generator page in <strong>Safari</strong> and fill in your info. Make sure the switch above is set to <strong>Light mode</strong>.</li>
+      <li>Tap and hold inside whichever layout preview you want (Horizontal or Stacked), then drag the selection handles to cover the entire signature (logo through website).</li>
       <li>Tap <strong>Copy</strong>.</li>
       <li>Open the <strong>Mail</strong> app and compose a new message to yourself. Paste the signature into the body and send it.</li>
       <li>Open the email you just sent. Tap and hold on the signature, <strong>Select All</strong>, then <strong>Copy</strong>.</li>
@@ -395,8 +424,7 @@
     <p style="color: var(--muted); font-size: 13px;"><em>The "shake to undo attributes" step is the trick that keeps the rich formatting — without it, iOS converts the paste to plain text.</em></p>
 
     <h3>Raw HTML source</h3>
-    <p>If your client lets you paste raw HTML, use the <strong>"Copy HTML Source"</strong> button instead:</p>
-    <pre id="html-source"></pre>
+    <p>If your email client has an option to paste raw HTML source directly (rather than pasting rich text), use the <strong>"Copy HTML"</strong> button for your chosen layout instead of <strong>"Copy Signature"</strong>. Most staff won't need this — it's only relevant for clients with an HTML source editor.</p>
   </details>
 
 </div>
@@ -430,12 +458,8 @@
     return s;
   }
 
-  // Build the signature HTML.
-  // Light mode is the primary target — sensible dark text on transparent background.
-  // No @media queries, no override classes: modern email clients (Apple Mail, iOS,
-  // Outlook.com) handle dark-mode adaptation themselves, and they do a cleaner job
-  // when we don't fight them with !important overrides.
-  function buildSignatureHTML(d) {
+  // Shared field prep used by both layout builders.
+  function prepareFields(d) {
     const name    = escapeHtml(d.name);
     const title   = escapeHtml(d.title);
     const org     = escapeHtml(d.org);
@@ -461,50 +485,71 @@
           <div><span style="color:#888888;">${escapeHtml(d.altLabel)}:&nbsp;</span><a href="${telHref(d.altPhone)}" style="color:#333333; text-decoration:none;">${escapeHtml(d.altPhone)}</a></div>`
       : '';
 
-    // Strategy: ship a stacked layout in the actual HTML (works everywhere,
-    // including Outlook desktop and narrow reading panes). A @media rule
-    // promotes it to a 3-column layout in clients that both support media
-    // queries AND have the viewport width (480px+). The horizontal divider
-    // is hidden in wide mode; the green border-right on .vrl-identity
-    // becomes the vertical accent. Outlook desktop ignores the @media block
-    // entirely, so it gets the stacked DOM as-is — exactly what we want.
-    return `<style>
-@media (min-width: 480px) {
-  .vrl-info { display: table; border-collapse: collapse; }
-  .vrl-identity { display: table-cell; vertical-align: top; border-right: 2px solid #9ACA3C; padding-right: 20px; padding-bottom: 0; }
-  .vrl-divider { display: none; }
-  .vrl-contact { display: table-cell; vertical-align: top; padding-left: 20px; }
-}
-</style>
-<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse; font-family:Arial, Helvetica, sans-serif; mso-line-height-rule:exactly;">
-  <tr>
-    <td style="padding:5px 18px 0 0; vertical-align:top;">
-      <img src="https://www.vrl.church/Content/ExternalSite/Core/ValleyRealLife_Logo_Icon_Color_200716.png" width="78" alt="Valley Real Life" style="display:block; border:0; outline:none; text-decoration:none; width:78px; height:auto;">
-    </td>
-    <td style="vertical-align:top;">
-      <div class="vrl-info">
-        <div class="vrl-identity">
-          <div style="font-size:17px; font-weight:bold; color:#222222; line-height:1.25; padding-bottom:5px;">${name}</div>
+    const identityHTML = `<div style="font-size:17px; font-weight:bold; color:#222222; line-height:1.25; padding-bottom:5px;">${name}</div>
           <div style="font-size:13px; color:#555555; line-height:1.4;">${title}</div>
-          <div style="font-size:13px; color:#555555; line-height:1.4;">${org}</div>
-        </div>
-        <div class="vrl-divider" style="border-top:2px solid #9ACA3C; margin:9px 0 7px; width:140px;"></div>
-        <div class="vrl-contact" style="font-size:13px; line-height:1.7;">
+          <div style="font-size:13px; color:#555555; line-height:1.4;">${org}</div>`;
+
+    const contactHTML = `<div style="font-size:13px; line-height:1.7;">
           <div><span style="color:#888888;">Office:&nbsp;</span><a href="${officeTel}" style="color:#333333; text-decoration:none;">${officeNumber}</a>${extPart}</div>${altPhoneLine}
           <div><span style="color:#888888;">Email:&nbsp;</span><a href="mailto:${email}" style="color:#333333; text-decoration:none;">${email}</a></div>
           <div><span style="color:#888888;">Web:&nbsp;</span><a href="${urlHref(d.website)}" style="color:#333333; text-decoration:none;">${website}</a></div>
-        </div>
-      </div>
+        </div>`;
+
+    return { identityHTML, contactHTML };
+  }
+
+  const LOGO_CELL = `<td style="padding:5px 18px 0 0; vertical-align:top;">
+      <img src="https://www.vrl.church/Content/ExternalSite/Core/ValleyRealLife_Logo_Icon_Color_200716.png" width="78" alt="Valley Real Life" style="display:block; border:0; outline:none; text-decoration:none; width:78px; height:auto;">
+    </td>`;
+
+  // Horizontal layout: identity and contact info sit side-by-side in real
+  // <table><td> cells (not CSS display:table) so it renders correctly in
+  // Outlook desktop's Word rendering engine, not just modern webmail.
+  // No @media query — M365 strips <style> blocks entirely, so this layout
+  // is fixed and self-contained: it looks the same everywhere it's pasted.
+  function buildHorizontalHTML(d) {
+    const { identityHTML, contactHTML } = prepareFields(d);
+    return `<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse; font-family:Arial, Helvetica, sans-serif; mso-line-height-rule:exactly;">
+  <tr>
+    ${LOGO_CELL}
+    <td style="vertical-align:top;">
+      <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;">
+        <tr>
+          <td style="vertical-align:top; border-right:2px solid #9ACA3C; padding-right:20px;">
+            ${identityHTML}
+          </td>
+          <td style="vertical-align:top; padding-left:20px;">
+            ${contactHTML}
+          </td>
+        </tr>
+      </table>
     </td>
   </tr>
 </table>`;
   }
 
-  // The dark preview below is a courtesy visualization only — it's a manual
+  // Stacked layout: identity above a horizontal rule above contact info,
+  // all in plain stacked <div>s. Also fixed and self-contained — no
+  // @media query, so it looks the same everywhere it's pasted.
+  function buildStackedHTML(d) {
+    const { identityHTML, contactHTML } = prepareFields(d);
+    return `<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse; font-family:Arial, Helvetica, sans-serif; mso-line-height-rule:exactly;">
+  <tr>
+    ${LOGO_CELL}
+    <td style="vertical-align:top;">
+      ${identityHTML}
+      <div style="border-top:2px solid #9ACA3C; margin:9px 0 7px; width:140px;"></div>
+      ${contactHTML}
+    </td>
+  </tr>
+</table>`;
+  }
+
+  // The dark preview is a courtesy visualization only — it's a manual
   // color swap to approximate what auto-adapting email clients will produce.
   // The copied/exported HTML never contains these overrides.
-  function buildSignatureHTMLForcedDark(d) {
-    return buildSignatureHTML(d)
+  function forceDark(html) {
+    return html
       .replace(/color:#222222;/g, 'color:#f0f0f0;')
       .replace(/color:#333333;/g, 'color:#e0e0e0;')
       .replace(/color:#555555;/g, 'color:#b8b8b8;')
@@ -528,11 +573,14 @@
     };
   }
 
+  let isDarkPreview = false;
+
   function render() {
     const d = getData();
-    $('preview-light').innerHTML = buildSignatureHTML(d);
-    $('preview-dark').innerHTML  = buildSignatureHTMLForcedDark(d);
-    $('html-source').textContent = buildSignatureHTML(d);
+    const horizontalHTML = buildHorizontalHTML(d);
+    const stackedHTML = buildStackedHTML(d);
+    $('preview-horizontal').innerHTML = isDarkPreview ? forceDark(horizontalHTML) : horizontalHTML;
+    $('preview-stacked').innerHTML = isDarkPreview ? forceDark(stackedHTML) : stackedHTML;
   }
 
   // ---------- Phone number formatting ----------
@@ -607,28 +655,41 @@
   Object.values(fields).forEach(el => el.addEventListener('input', render));
   render();
 
-  // Desktop / Mobile preview toggle.
-  // The signature itself uses @media (min-width: 480px) for clients in the wild,
-  // but the preview here is in a browser at whatever width the user has, so we
-  // force the layout via class overrides for a faithful side-by-side comparison.
-  const toggleBtns = document.querySelectorAll('.toggle-btn');
-  const previews = [$('preview-light'), $('preview-dark')];
-  toggleBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const mode = btn.dataset.mode;
-      toggleBtns.forEach(b => b.classList.toggle('active', b === btn));
-      previews.forEach(p => {
-        p.classList.remove('force-desktop', 'force-mobile');
-        p.classList.add(`force-${mode}`);
-      });
+  // Light / Dark preview switch. Purely cosmetic — it swaps which color
+  // variant is shown in the two preview boxes below; the copied HTML is
+  // always the light (production) version.
+  const darkToggle = $('dark-toggle');
+  const modeLabelLight = $('mode-label-light');
+  const modeLabelDark = $('mode-label-dark');
+  const previewCanvases = [$('preview-horizontal'), $('preview-stacked')];
+
+  function applyPreviewMode() {
+    previewCanvases.forEach(el => {
+      el.classList.toggle('preview-light', !isDarkPreview);
+      el.classList.toggle('preview-dark', isDarkPreview);
     });
+    modeLabelLight.classList.toggle('active', !isDarkPreview);
+    modeLabelDark.classList.toggle('active', isDarkPreview);
+    darkToggle.setAttribute('aria-checked', String(isDarkPreview));
+  }
+  darkToggle.addEventListener('change', () => {
+    isDarkPreview = darkToggle.checked;
+    applyPreviewMode();
+    render();
   });
+  applyPreviewMode();
+
+  // Builds plain-text fallback for the clipboard from a given HTML string.
+  function toPlainText(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.innerText;
+  }
 
   // Copy the rendered signature (keeps styling when pasted into email clients).
-  $('copy-rendered').addEventListener('click', async (e) => {
-    const btn = e.currentTarget;
-    const html = buildSignatureHTML(getData());
-    const plain = $('preview-light').innerText;
+  // Always copies the light/production version regardless of preview mode.
+  async function copySignature(btn, html) {
+    const plain = toPlainText(html);
     try {
       await navigator.clipboard.write([
         new ClipboardItem({
@@ -638,21 +699,25 @@
       ]);
       flash(btn, 'Copied!');
     } catch (err) {
-      // Fallback: selection-based copy
+      // Fallback: selection-based copy via a temporary offscreen element.
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      tmp.style.position = 'fixed';
+      tmp.style.left = '-9999px';
+      document.body.appendChild(tmp);
       const range = document.createRange();
-      range.selectNodeContents($('preview-light'));
+      range.selectNodeContents(tmp);
       const sel = window.getSelection();
       sel.removeAllRanges();
       sel.addRange(range);
       document.execCommand('copy');
       sel.removeAllRanges();
+      document.body.removeChild(tmp);
       flash(btn, 'Copied!');
     }
-  });
+  }
 
-  $('copy-html').addEventListener('click', async (e) => {
-    const btn = e.currentTarget;
-    const html = buildSignatureHTML(getData());
+  async function copyHtmlSource(btn, html) {
     try {
       await navigator.clipboard.writeText(html);
       flash(btn, 'HTML copied!');
@@ -665,7 +730,12 @@
       document.body.removeChild(ta);
       flash(btn, 'HTML copied!');
     }
-  });
+  }
+
+  $('copy-sig-horizontal').addEventListener('click', (e) => copySignature(e.currentTarget, buildHorizontalHTML(getData())));
+  $('copy-sig-stacked').addEventListener('click', (e) => copySignature(e.currentTarget, buildStackedHTML(getData())));
+  $('copy-html-horizontal').addEventListener('click', (e) => copyHtmlSource(e.currentTarget, buildHorizontalHTML(getData())));
+  $('copy-html-stacked').addEventListener('click', (e) => copyHtmlSource(e.currentTarget, buildStackedHTML(getData())));
 
   function flash(btn, msg) {
     const originalText = btn.textContent;
