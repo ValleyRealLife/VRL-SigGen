@@ -1,0 +1,752 @@
+{% stylesheet %}
+  :root {
+    --vrl-green: #9ACA3C;
+    --vrl-green-dark: #7AAA1C;
+    --bg: #f5f5f3;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --muted: #666666;
+    --border: #e0e0dd;
+    --dark-bg: #1f1f1f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 36px 28px 72px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .signature-wrapper { max-width: 1100px; }
+  header { margin-bottom: 36px; }
+  h1 { font-size: 30px; margin: 0 0 8px; font-weight: 700; letter-spacing: -0.02em; }
+  header p { margin: 0; color: var(--muted); font-size: 16px; }
+  .accent-bar {
+    display: inline-block;
+    width: 42px; height: 5px;
+    background: var(--vrl-green);
+    margin-bottom: 16px;
+    border-radius: 2px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    gap: 28px;
+  }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 26px;
+  }
+  .card h2 {
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 20px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  input[type="text"], input[type="tel"], input[type="email"], input[type="url"] {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: inherit;
+    background: #fafafa;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  input:focus {
+    outline: none;
+    border-color: var(--vrl-green);
+    background: #ffffff;
+  }
+  input.is-valid {
+    border-color: var(--vrl-green);
+    background: #fbfdf6;
+  }
+  input.is-partial {
+    border-color: #d9a514;
+    background: #fdfaf0;
+  }
+  input:disabled {
+    background: #ececea;
+    color: #777777;
+    cursor: not-allowed;
+    font-weight: 500;
+  }
+  select {
+    width: 100%;
+    padding: 11px 36px 11px 13px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: inherit;
+    background-color: #fafafa;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none'><path d='M1 1.5L6 6.5L11 1.5' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 13px center;
+    background-size: 12px;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    color: var(--text);
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+  select:focus {
+    outline: none;
+    border-color: var(--vrl-green);
+    background-color: #ffffff;
+  }
+  .field { margin-bottom: 18px; }
+  .field-row        { display: grid; grid-template-columns: 1fr 1fr;    gap: 12px; }
+  .field-row-ext    { display: grid; grid-template-columns: 1fr 150px;  gap: 12px; }
+  .field-row-label  { display: grid; grid-template-columns: 150px 1fr;  gap: 12px; }
+  .sub-field { margin-top: 12px; }
+
+  /* ---------- Light / Dark preview switch ---------- */
+  .mode-switch-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .mode-switch-row .mode-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color 0.15s;
+  }
+  .mode-switch-row .mode-label.active { color: var(--text); }
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 26px;
+    flex: 0 0 auto;
+  }
+  .switch input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    cursor: pointer;
+  }
+  .switch-track {
+    position: absolute;
+    inset: 0;
+    background: #ccc;
+    border-radius: 34px;
+    transition: background 0.15s;
+    pointer-events: none;
+  }
+  .switch-track::before {
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+    transition: transform 0.15s;
+  }
+  .switch input:checked + .switch-track { background: var(--text); }
+  .switch input:checked + .switch-track::before { transform: translateX(22px); }
+  .switch input:focus-visible + .switch-track { outline: 2px solid var(--vrl-green); outline-offset: 2px; }
+
+  /* ---------- Layout previews ---------- */
+  .preview-group { margin-bottom: 22px; }
+  .preview-group-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .preview-group-header h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .preview-group-header .hint {
+    font-size: 13px;
+    color: #999;
+  }
+
+  .preview-box {
+    margin-bottom: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .preview-canvas { padding: 24px; }
+  .preview-light { background: #ffffff; }
+  .preview-dark { background: var(--dark-bg); }
+
+  .actions {
+    display: flex;
+    gap: 12px;
+  }
+  button {
+    flex: 1;
+    padding: 14px 18px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, transform 0.05s;
+  }
+  button:active { transform: translateY(1px); }
+  .btn-primary {
+    background: var(--vrl-green);
+    color: #1a1a1a;
+  }
+  .btn-primary:hover { background: var(--vrl-green-dark); color: #fff; }
+  .btn-secondary {
+    background: #1a1a1a;
+    color: #fff;
+  }
+  .btn-secondary:hover { background: #333; }
+  .copied { background: #2a8c2a !important; color: #fff !important; }
+
+  details {
+    margin-top: 28px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 26px;
+  }
+  details[open] { padding-bottom: 26px; }
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 10px 0;
+    user-select: none;
+  }
+  summary:hover { color: var(--vrl-green-dark); }
+  details h3 { font-size: 16px; margin: 22px 0 8px; }
+  details p, details li { font-size: 15px; color: #333; line-height: 1.55; }
+  details code {
+    background: #f0f0ec;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 14px;
+  }
+{% endstylesheet %}
+
+<div class="signature-wrapper">
+
+  <header>
+    <p><strong>Fill in your details, preview, copy, paste.</strong> See the instructions below for how to set the signature up in your mail client. The stacked view is preferred as it will look better in mobile view.</p>
+    <!--<span class="accent-bar"></span>-->
+  </header>
+
+  <div class="grid">
+
+    <!-- ============ FORM ============ -->
+    <section class="card">
+      <h2>Your Info</h2>
+
+      <div class="field">
+        <label for="f-name">Full Name</label>
+        <input type="text" id="f-name" value="{{ CurrentPerson.FullName | Escape }}" placeholder="First Last">
+      </div>
+
+      <div class="field">
+        <label for="f-title">Title</label>
+        <input type="text" id="f-title" value="" placeholder="Your Role">
+      </div>
+
+      <div class="field">
+        <label for="f-org">Organization</label>
+        <input type="text" id="f-org" value="Valley Real Life">
+      </div>
+
+      <div class="field">
+        <label>Office Phone</label>
+        <div class="field-row-ext">
+          <input type="text" value="509-232-0840" disabled aria-label="Office phone (fixed)">
+          <input type="text" id="f-ext" placeholder="ext. (optional)" maxlength="8">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Alternate Phone <span style="font-weight:400; text-transform:none; letter-spacing:0; color:#999;">(optional)</span></label>
+        <div class="field-row-label">
+          <select id="f-alt-label">
+            <option value="">— None —</option>
+            <option value="Direct">Direct</option>
+            <option value="Mobile">Mobile</option>
+            <option value="Cell">Cell</option>
+            <option value="Home">Home</option>
+            <option value="Custom">Custom…</option>
+          </select>
+          <input type="tel" id="f-alt-phone" placeholder="509-XXX-XXXX">
+        </div>
+        <input type="text" id="f-alt-custom" class="sub-field" placeholder="Custom label (e.g., Work Cell)" style="display:none;">
+      </div>
+
+      <div class="field">
+        <label for="f-email">Email</label>
+        <input type="email" id="f-email" value="{{ CurrentPerson.Email | Escape }}" placeholder="name@vrl.church">
+      </div>
+
+      <div class="field">
+        <label for="f-website">Website</label>
+        <input type="url" id="f-website" value="www.vrl.church">
+      </div>
+
+    </section>
+
+    <!-- ============ PREVIEW ============ -->
+    <section>
+
+      <div class="mode-switch-row">
+        <span class="mode-label" id="mode-label-light">Light mode</span>
+        <label class="switch">
+          <input type="checkbox" id="dark-toggle" role="switch" aria-checked="false" aria-label="Toggle dark mode preview">
+          <span class="switch-track"></span>
+        </label>
+        <span class="mode-label" id="mode-label-dark">Dark mode</span>
+      </div>
+
+      <div class="preview-group">
+        <div class="preview-group-header">
+          <h3>Horizontal layout</h3>
+          <span class="hint">side-by-side — best for wide reading panes and desktop Outlook</span>
+        </div>
+        <div class="preview-box">
+          <div class="preview-canvas preview-light" id="preview-horizontal"></div>
+        </div>
+        <div class="actions">
+          <button class="btn-primary" id="copy-sig-horizontal">Copy Signature</button>
+          <button class="btn-secondary" id="copy-html-horizontal">Copy HTML</button>
+        </div>
+      </div>
+
+      <div class="preview-group">
+        <div class="preview-group-header">
+          <h3>Stacked layout</h3>
+          <span class="hint">vertical — best for M365 web and narrow / mobile views</span>
+        </div>
+        <div class="preview-box">
+          <div class="preview-canvas preview-light" id="preview-stacked"></div>
+        </div>
+        <div class="actions">
+          <button class="btn-primary" id="copy-sig-stacked">Copy Signature</button>
+          <button class="btn-secondary" id="copy-html-stacked">Copy HTML</button>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ============ INSTRUCTIONS ============ -->
+  <details>
+    <summary>How to install in your email client</summary>
+
+    <h3>Outlook (desktop — Windows or Mac)</h3>
+    <ol>
+      <li>Click <strong>"Copy Signature"</strong> under whichever layout you prefer — Horizontal or Stacked.</li>
+      <li><strong>Windows:</strong> File → Options → Mail → Signatures.<br>
+          <strong>Mac (new Outlook):</strong> Outlook → Settings → Signatures.<br>
+          <strong>Mac (legacy Outlook):</strong> Outlook → Preferences → Signatures.</li>
+      <li>Click <strong>New</strong> (or <strong>+</strong> on Mac), name the signature.</li>
+      <li>Paste into the edit box (Ctrl/Cmd+V).</li>
+      <li>Set as default for new messages and replies. Save / OK.</li>
+    </ol>
+    <p style="color: var(--muted); font-size: 13px;"><em>Outlook desktop ignores dark-mode CSS, so it always renders the light version — this is expected and looks correct.</em></p>
+
+    <h3>Microsoft 365 / Outlook on the web</h3>
+    <ol>
+      <li>Click <strong>"Copy Signature"</strong> under whichever layout you prefer — Horizontal or Stacked.</li>
+      <li>Settings (gear, top right) → <strong>Mail → Compose and reply</strong>.<br>
+          <em>(If you don't see it, click "View all Outlook settings" at the bottom of the settings pane.)</em></li>
+      <li>Under <strong>Email signature</strong>, click <strong>+ New signature</strong>, give it a name.</li>
+      <li>Paste into the editor (Ctrl/Cmd+V).</li>
+      <li>Under <strong>Select default signatures</strong>, set it for new messages and replies/forwards. Save.</li>
+    </ol>
+    <p style="color: var(--muted); font-size: 13px;"><em>M365 strips out any embedded styling more complex than basic formatting, so both layouts here are built as plain, self-contained HTML that doesn't rely on stripped-out styles — pick whichever look you prefer and it will render the same everywhere.</em></p>
+
+    <h3>Apple Mail (macOS)</h3>
+    <ol>
+      <li>Click <strong>"Copy Signature"</strong> under whichever layout you prefer — Horizontal or Stacked.</li>
+      <li>Mail → <strong>Settings</strong> (or <strong>Preferences</strong> on older versions) → <strong>Signatures</strong> tab.</li>
+      <li>Select your account in the left column, click <strong>+</strong> to add a new signature, name it.</li>
+      <li>Click into the right-hand editor pane and paste (Cmd+V).</li>
+      <li><strong>Important:</strong> uncheck <em>"Always match my default message font"</em> at the bottom — otherwise Mail strips the formatting.</li>
+      <li>Drag the new signature onto your account if it isn't already attached, and pick it from the "Choose Signature" dropdown.</li>
+    </ol>
+
+    <h3>Apple Mail (iOS / iPadOS)</h3>
+    <p>iOS Mail doesn't have a rich signature editor in Settings — it accepts plain text only there. To get the formatted signature in, use this workaround:</p>
+    <ol>
+      <li>On your iPhone/iPad, open this page in <strong>Safari</strong> and fill in your info. Make sure the switch above is set to <strong>Light mode</strong>.</li>
+      <li>Tap and hold inside whichever layout preview you want (Horizontal or Stacked), then drag the selection handles to cover the entire signature (logo through website).</li>
+      <li>Tap <strong>Copy</strong>.</li>
+      <li>Open the <strong>Mail</strong> app and compose a new message to yourself. Paste the signature into the body and send it.</li>
+      <li>Open the email you just sent. Tap and hold on the signature, <strong>Select All</strong>, then <strong>Copy</strong>.</li>
+      <li>Go to <strong>Settings → Mail → Signature</strong>. Tap into the signature field, paste, and <em>before tapping out</em> shake the device (or tap and hold → <strong>Undo</strong> / <strong>Undo Attributes</strong>) — this preserves the formatting that iOS otherwise strips on first paste.</li>
+      <li>If you have multiple accounts, tap <strong>Per Account</strong> at the top and paste into each.</li>
+    </ol>
+    <p style="color: var(--muted); font-size: 13px;"><em>The "shake to undo attributes" step is the trick that keeps the rich formatting — without it, iOS converts the paste to plain text.</em></p>
+
+    <h3>Raw HTML source</h3>
+    <p>If your email client has an option to paste raw HTML source directly (rather than pasting rich text), use the <strong>"Copy HTML"</strong> button for your chosen layout instead of <strong>"Copy Signature"</strong>. Most staff won't need this — it's only relevant for clients with an HTML source editor.</p>
+  </details>
+
+</div>
+
+<script>
+(function () {
+  // Named byId (not `$`) and the whole script wrapped in this IIFE on purpose:
+  // this runs inside a Rock HTML block, sharing the page's global scope with
+  // Rock's own admin chrome (block-edit controls, etc.), which depends on
+  // jQuery's global `$`. A top-level `const $ = ...` in a plain <script> tag
+  // leaks into that same shared global scope (not just this tag) and either
+  // shadows jQuery's `$` for scripts that run after this one, or throws a
+  // SyntaxError if something else tries to redeclare `$` — either way it can
+  // break Rock's own page behavior. The IIFE keeps every other name here
+  // (fields, render, getData, flash, ...) off the shared scope too.
+  const byId = (id) => document.getElementById(id);
+
+  const fields = {
+    name:      byId('f-name'),
+    title:     byId('f-title'),
+    org:       byId('f-org'),
+    ext:       byId('f-ext'),
+    altLabel:  byId('f-alt-label'),
+    altCustom: byId('f-alt-custom'),
+    altPhone:  byId('f-alt-phone'),
+    email:     byId('f-email'),
+    website:   byId('f-website'),
+  };
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+  function telHref(s) { return 'tel:' + String(s).replace(/[^\d+]/g, ''); }
+  function urlHref(s) {
+    s = String(s).trim();
+    if (!/^https?:\/\//i.test(s)) s = 'https://' + s;
+    return s;
+  }
+
+  // Shared field prep used by both layout builders.
+  function prepareFields(d) {
+    const name    = escapeHtml(d.name);
+    const title   = escapeHtml(d.title);
+    const org     = escapeHtml(d.org);
+    const email   = escapeHtml(d.email);
+    const website = escapeHtml(d.website);
+
+    // Office phone is fixed for the whole org.
+    const officeNumber = '509-232-0840';
+    const officeDigits = '5092320840';
+    const extDigits = d.ext ? d.ext.replace(/\D/g, '') : '';
+    // ",," in a tel: URI is a DTMF pause — iOS and Android auto-dial the
+    // extension after a brief delay so the auto-attendant has time to answer.
+    const officeTel = extDigits
+      ? `tel:${officeDigits},,${extDigits}`
+      : `tel:${officeDigits}`;
+    const extPart = d.ext
+      ? `<span style="color:#888888;">&nbsp;ext.&nbsp;${escapeHtml(d.ext)}</span>`
+      : '';
+
+    // Alt phone line only renders when BOTH a label and a number are present.
+    const altPhoneLine = (d.altLabel && d.altPhone)
+      ? `
+          <div><span style="color:#888888;">${escapeHtml(d.altLabel)}:&nbsp;</span><a href="${telHref(d.altPhone)}" style="color:#333333; text-decoration:none;">${escapeHtml(d.altPhone)}</a></div>`
+      : '';
+
+    const identityHTML = `<div style="font-size:17px; font-weight:bold; color:#222222; line-height:1.25; padding-bottom:5px;">${name}</div>
+          <div style="font-size:13px; color:#555555; line-height:1.4;">${title}</div>
+          <div style="font-size:13px; color:#555555; line-height:1.4;">${org}</div>`;
+
+    const contactHTML = `<div style="font-size:13px; line-height:1.7;">
+          <div><span style="color:#888888;">Office:&nbsp;</span><a href="${officeTel}" style="color:#333333; text-decoration:none;">${officeNumber}</a>${extPart}</div>${altPhoneLine}
+          <div><span style="color:#888888;">Email:&nbsp;</span><a href="mailto:${email}" style="color:#333333; text-decoration:none;">${email}</a></div>
+          <div><span style="color:#888888;">Web:&nbsp;</span><a href="${urlHref(d.website)}" style="color:#333333; text-decoration:none;">${website}</a></div>
+        </div>`;
+
+    return { identityHTML, contactHTML };
+  }
+
+  const LOGO_CELL = `<td style="padding:5px 18px 0 0; vertical-align:top;">
+      <img src="https://www.vrl.church/Content/ExternalSite/Core/ValleyRealLife_Logo_Icon_Color_200716.png" width="78" alt="Valley Real Life" style="display:block; border:0; outline:none; text-decoration:none; width:78px; height:auto;">
+    </td>`;
+
+  // Horizontal layout: identity and contact info sit side-by-side in real
+  // <table><td> cells (not CSS display:table) so it renders correctly in
+  // Outlook desktop's Word rendering engine, not just modern webmail.
+  // No @media query — M365 strips <style> blocks entirely, so this layout
+  // is fixed and self-contained: it looks the same everywhere it's pasted.
+  function buildHorizontalHTML(d) {
+    const { identityHTML, contactHTML } = prepareFields(d);
+    return `<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse; font-family:Arial, Helvetica, sans-serif; mso-line-height-rule:exactly;">
+  <tr>
+    ${LOGO_CELL}
+    <td style="vertical-align:top;">
+      <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;">
+        <tr>
+          <td style="vertical-align:top; border-right:2px solid #9ACA3C; padding-right:20px;">
+            ${identityHTML}
+          </td>
+          <td style="vertical-align:top; padding-left:20px;">
+            ${contactHTML}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>`;
+  }
+
+  // Stacked layout: identity above a horizontal rule above contact info,
+  // all in plain stacked <div>s. Also fixed and self-contained — no
+  // @media query, so it looks the same everywhere it's pasted.
+  function buildStackedHTML(d) {
+    const { identityHTML, contactHTML } = prepareFields(d);
+    return `<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse; font-family:Arial, Helvetica, sans-serif; mso-line-height-rule:exactly;">
+  <tr>
+    ${LOGO_CELL}
+    <td style="vertical-align:top;">
+      ${identityHTML}
+      <div style="border-top:2px solid #9ACA3C; margin:9px 0 7px; width:140px;"></div>
+      ${contactHTML}
+    </td>
+  </tr>
+</table>`;
+  }
+
+  // The dark preview is a courtesy visualization only — it's a manual
+  // color swap to approximate what auto-adapting email clients will produce.
+  // The copied/exported HTML never contains these overrides.
+  function forceDark(html) {
+    return html
+      .replace(/color:#222222;/g, 'color:#f0f0f0;')
+      .replace(/color:#333333;/g, 'color:#e0e0e0;')
+      .replace(/color:#555555;/g, 'color:#b8b8b8;')
+      .replace(/color:#888888;/g, 'color:#9a9a9a;');
+  }
+
+  function getData() {
+    const labelChoice = fields.altLabel.value;
+    const altLabel = labelChoice === 'Custom'
+      ? (fields.altCustom.value.trim() || 'Custom')
+      : labelChoice;
+    return {
+      name:     fields.name.value     || 'First Last',
+      title:    fields.title.value    || 'Your Role',
+      org:      fields.org.value      || 'Valley Real Life',
+      ext:      fields.ext.value.trim(),
+      altLabel: altLabel,
+      altPhone: fields.altPhone.value,
+      email:    fields.email.value    || 'name@vrl.church',
+      website:  fields.website.value  || 'www.vrl.church',
+    };
+  }
+
+  let isDarkPreview = false;
+
+  function render() {
+    const d = getData();
+    const horizontalHTML = buildHorizontalHTML(d);
+    const stackedHTML = buildStackedHTML(d);
+    byId('preview-horizontal').innerHTML = isDarkPreview ? forceDark(horizontalHTML) : horizontalHTML;
+    byId('preview-stacked').innerHTML = isDarkPreview ? forceDark(stackedHTML) : stackedHTML;
+  }
+
+  // ---------- Phone number formatting ----------
+  // Auto-formats to xxx-xxx-xxxx as the user types. Strips non-digits,
+  // caps at 10 digits, and handles backspace-over-hyphen by deleting the
+  // digit before the hyphen (otherwise the hyphen just snaps back in).
+  function formatPhoneNumber(digits) {
+    digits = digits.slice(0, 10);
+    if (digits.length === 0) return '';
+    if (digits.length <= 3) return digits;
+    if (digits.length <= 6) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
+    return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+  }
+
+  function updatePhoneValidity(input) {
+    const digits = input.value.replace(/\D/g, '');
+    input.classList.remove('is-valid', 'is-partial');
+    if (digits.length === 10) input.classList.add('is-valid');
+    else if (digits.length > 0) input.classList.add('is-partial');
+  }
+
+  function handlePhoneInput(e) {
+    const input = e.target;
+    const oldValue = input.value;
+    const oldCursor = input.selectionStart || 0;
+    // Count how many digits sit before the cursor — that's the anchor
+    // we'll restore after reformatting changes the string length.
+    const digitsBeforeCursor = oldValue.slice(0, oldCursor).replace(/\D/g, '').length;
+
+    const digits = oldValue.replace(/\D/g, '').slice(0, 10);
+    const formatted = formatPhoneNumber(digits);
+    input.value = formatted;
+
+    // Walk the formatted string until we've passed the same number of digits.
+    let newCursor = 0, digitCount = 0;
+    for (let i = 0; i < formatted.length && digitCount < digitsBeforeCursor; i++) {
+      if (/\d/.test(formatted[i])) digitCount++;
+      newCursor = i + 1;
+    }
+    input.setSelectionRange(newCursor, newCursor);
+    updatePhoneValidity(input);
+  }
+
+  function handlePhoneKeyDown(e) {
+    if (e.key !== 'Backspace') return;
+    const input = e.target;
+    const pos = input.selectionStart;
+    // Only intercept when cursor (no selection) is just past a hyphen.
+    if (pos > 0 && pos === input.selectionEnd && input.value[pos - 1] === '-') {
+      e.preventDefault();
+      const newVal = input.value.slice(0, pos - 2) + input.value.slice(pos);
+      input.value = newVal;
+      input.setSelectionRange(pos - 2, pos - 2);
+      input.dispatchEvent(new Event('input'));
+    }
+  }
+
+  // Attach phone handlers BEFORE render() handlers so reformatting happens
+  // first — render() then reads the formatted value.
+  fields.altPhone.addEventListener('input', handlePhoneInput);
+  fields.altPhone.addEventListener('keydown', handlePhoneKeyDown);
+
+  // Show/hide the custom-label input based on the dropdown selection.
+  function updateCustomLabelVisibility() {
+    const isCustom = fields.altLabel.value === 'Custom';
+    fields.altCustom.style.display = isCustom ? 'block' : 'none';
+    if (isCustom) fields.altCustom.focus();
+  }
+  fields.altLabel.addEventListener('change', updateCustomLabelVisibility);
+  updateCustomLabelVisibility();
+
+  Object.values(fields).forEach(el => el.addEventListener('input', render));
+  render();
+
+  // Light / Dark preview switch. Purely cosmetic — it swaps which color
+  // variant is shown in the two preview boxes below; the copied HTML is
+  // always the light (production) version.
+  const darkToggle = byId('dark-toggle');
+  const modeLabelLight = byId('mode-label-light');
+  const modeLabelDark = byId('mode-label-dark');
+  const previewCanvases = [byId('preview-horizontal'), byId('preview-stacked')];
+
+  function applyPreviewMode() {
+    previewCanvases.forEach(el => {
+      el.classList.toggle('preview-light', !isDarkPreview);
+      el.classList.toggle('preview-dark', isDarkPreview);
+    });
+    modeLabelLight.classList.toggle('active', !isDarkPreview);
+    modeLabelDark.classList.toggle('active', isDarkPreview);
+    darkToggle.setAttribute('aria-checked', String(isDarkPreview));
+  }
+  darkToggle.addEventListener('change', () => {
+    isDarkPreview = darkToggle.checked;
+    applyPreviewMode();
+    render();
+  });
+  applyPreviewMode();
+
+  // Builds plain-text fallback for the clipboard from a given HTML string.
+  function toPlainText(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.innerText;
+  }
+
+  // Copy the rendered signature (keeps styling when pasted into email clients).
+  // Always copies the light/production version regardless of preview mode.
+  async function copySignature(btn, html) {
+    const plain = toPlainText(html);
+    try {
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          'text/html':  new Blob([html],  { type: 'text/html' }),
+          'text/plain': new Blob([plain], { type: 'text/plain' }),
+        })
+      ]);
+      flash(btn, 'Copied!');
+    } catch (err) {
+      // Fallback: selection-based copy via a temporary offscreen element.
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      tmp.style.position = 'fixed';
+      tmp.style.left = '-9999px';
+      document.body.appendChild(tmp);
+      const range = document.createRange();
+      range.selectNodeContents(tmp);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      document.execCommand('copy');
+      sel.removeAllRanges();
+      document.body.removeChild(tmp);
+      flash(btn, 'Copied!');
+    }
+  }
+
+  async function copyHtmlSource(btn, html) {
+    try {
+      await navigator.clipboard.writeText(html);
+      flash(btn, 'HTML copied!');
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = html;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      flash(btn, 'HTML copied!');
+    }
+  }
+
+  byId('copy-sig-horizontal').addEventListener('click', (e) => copySignature(e.currentTarget, buildHorizontalHTML(getData())));
+  byId('copy-sig-stacked').addEventListener('click', (e) => copySignature(e.currentTarget, buildStackedHTML(getData())));
+  byId('copy-html-horizontal').addEventListener('click', (e) => copyHtmlSource(e.currentTarget, buildHorizontalHTML(getData())));
+  byId('copy-html-stacked').addEventListener('click', (e) => copyHtmlSource(e.currentTarget, buildStackedHTML(getData())));
+
+  function flash(btn, msg) {
+    const originalText = btn.textContent;
+    btn.textContent = msg;
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.classList.remove('copied');
+    }, 1500);
+  }
+})();
+</script>
